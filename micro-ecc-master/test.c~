@@ -1,0 +1,45 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+
+#include "sha3.h"
+
+
+
+
+void print_uint8 (const char * title, uint8_t * data, int32_t dataLen) 
+{
+	printf("%s", title) ;
+	int i ;
+	for (i = 0; i < dataLen; i++) {
+		printf("%02X",data[i]) ;
+	}
+	printf("\n") ;
+}
+
+
+
+
+int main ()
+{
+
+
+	sha3_ctx ctx ;
+	rhash_sha3_256_init(&ctx) ;
+	rhash_sha3_update(&ctx, (const unsigned char *) "hello", sizeof("hello")) ;
+	rhash_keccak_final(&ctx, hash) ;
+
+	if (hash == NULL) {
+                printf("hash == NULL\n");
+                return 1;
+	}
+
+	print_uint8 ("hash :",hash, 32) ;
+
+	return 0 ;
+}
+
+
+
+
+

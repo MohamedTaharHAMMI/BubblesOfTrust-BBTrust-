@@ -1,0 +1,196 @@
+pragma solidity ^0.4.5;
+
+
+
+contract Diaries {
+	
+	
+	address   public  minter ;	
+	address[] public  availableAccounts ;
+        address[] public  usedAccounts      ;
+
+	uint pageNumber = 0 ;
+	mapping (uint  => string) public lidger ;
+	mapping (address => uint) public balances ;
+	
+	
+	event addressregistered(address addr) ;
+	event addresstaken(address addr) ;
+	event sent(address sender, address receiver, uint amount) ;
+
+	function Diaries () 
+	{
+    		minter = msg.sender ;
+		usedAccounts.push(minter) ;
+		balances [minter] = 1000 ;
+        }	
+	
+
+	function registerAddress(address addr)
+	{ 
+		balances[addr] = 100 ;
+    		availableAccounts.push(addr) ;
+		addressregistered(addr) ;
+        }  
+
+//  not used
+	function GetAvailableAccounts () returns (address[]) 
+	{
+		return availableAccounts ;
+	}
+
+	function GetUsedAccounts () returns (address[]) 
+	{
+		return usedAccounts ;
+	}
+
+
+    // I m obliged to create two function in order to use the ".push" wich accept only global variables
+/*	function TakeAddress(address addr) 
+	{ // this function should be used only inside the contract 
+
+		if (availableAccounts.length <= 0)
+			return ; // Error	
+						
+		uint i = 0 ;	
+		while ((i < availableAccounts.length) && (availableAccounts[i] != addr))
+			i++ ;
+		if (i == availableAccounts.length)  
+			return ; // Error address does not exist
+		      	
+		RemoveFromAvailableAccounts(i) ;
+		usedAccounts.push(addr) ;
+		addresstaken (addr) ;
+	} 
+*/
+
+	function TakeFromLastAddress() 
+	{  
+		if (availableAccounts.length <= 1) // 0 is reserved for the contract creator
+			return ; // Error	
+				
+		usedAccounts.push(availableAccounts[availableAccounts.length - 1]) ;
+		addresstaken (availableAccounts[availableAccounts.length - 1]) ;
+
+		
+		delete availableAccounts[availableAccounts.length - 1] ;
+		availableAccounts.length -- ;
+		
+		//Send (minter, usedAccounts[usedAccounts.length - 1], 25) ;
+		
+		/*if (usedAccounts[usedAccounts.length - 1] != minter) {
+			balances [minter]     -= 25 ;
+			//balances [usedAccounts[usedAccounts.length - 1]] = 25 ;
+		}*/   
+   
+	} 
+
+//  not used  
+/*  	function LeaveAddress(address addr) 
+	{ // this function should be used only inside the contract 
+
+		if (usedAccounts.length <= 0)
+			return ; // Error	
+						
+		uint i = 0 ;	
+		while ((i < usedAccounts.length) && (usedAccounts[i] != addr))
+			i++ ;
+		if (i == usedAccounts.length)  
+			return ; // Error address does not exist
+		      	
+		RemoveFromUsedAccounts(i) ;
+		availableAccounts.push(addr) ;
+    }  
+*/        
+  
+    // I m obliged to create two function in order to use the ".length--" wich accept only global variables
+/*    function RemoveFromAvailableAccounts(uint index)  //returns(address[])
+    {
+       		if (index >= availableAccounts.length) 
+			return ; // Error
+
+      		for (uint i = index; i<availableAccounts.length-1; i++) {
+            		availableAccounts[i] = availableAccounts[i+1] ;
+        	}
+ 
+
+		delete availableAccounts[availableAccounts.length-1] ;
+        	availableAccounts.length--;
+
+        	//return availableAccounts;
+     }
+*/
+
+//  not used
+/*    function RemoveFromUsedAccounts(uint index)  //returns(address[])
+    {
+       		if (index >= usedAccounts.length) 
+			return ; // Error
+
+        	for (uint i = index; i<usedAccounts.length-1; i++) {
+            		usedAccounts[i] = usedAccounts[i+1] ;
+        	}
+        	delete usedAccounts[usedAccounts.length-1] ;
+        	usedAccounts.length--;
+        	//return usedAccounts;
+     }
+*/
+
+	function Send (address sender, address receiver, uint amount) 
+	{
+        	if (balances[sender] < amount) 
+			return ;
+        	balances[msg.sender] -= amount ;
+        	balances[receiver]   += amount ;
+          	sent(sender, receiver, amount) ;
+        }	
+
+
+	function GetBalance (address account) returns (uint) 
+	{
+		return balances [account] ;
+	}
+
+	
+//  not used
+	function GetMyAddress () returns (address) 
+	{
+		return msg.sender ;
+	}
+
+	function GetMinterAddress () returns (address) 
+	{
+		return minter ;
+	}
+
+	function WriteStory (string story) // the minter write for free
+	{
+		if (balances[msg.sender] > 0) {
+			lidger [pageNumber] = story ;
+        		balances[msg.sender] -= 1 ;
+        		balances[minter] += 1 ;
+			pageNumber ++ ;
+		} 
+   	}
+  
+	function ReadStory (uint number) returns (string)
+	{
+		if (balances[msg.sender] > 0) {
+			balances[msg.sender] -= 1 ;
+        		balances[minter] += 1 ;
+			return lidger [number] ;
+		} else {
+			return "You need 1.00 MED in order to read this story" ;			
+		}
+   	}
+ 
+
+//  function Mint (address receiver, uint amount) 
+//  {
+//        	if (msg.sender == minter) return ;
+//        	balances[receiver] += amount ;
+//	}
+ 
+}
+
+
