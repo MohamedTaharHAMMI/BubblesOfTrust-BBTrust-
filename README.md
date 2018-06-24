@@ -23,7 +23,7 @@ BBTrust is developped using:
 - a smart contract that ensures our system functioning and which is developed using Solidity language (http://solidity.readthedocs.io/en/v0.4.24/); 
 - for the interactions between end-nodes and the blockchain, we created a C++ interface that encode/decode data toward/from 
 Ethereum. These interactions are realized using JSON Remote Procedure Call (RPC);
--TestRPC (https://github.com/ethereumjs/testrpc), which represents a Ethereum tool for testing and development purposes and that
+- TestRPC (https://github.com/ethereumjs/testrpc), which represents a Ethereum tool for testing and development purposes and that
 emulates interactions to the blockchain without the overheads of running a real Ethereum node. An approach deployed using
 TestRPC, acts exactly in the same way on the public Ethereum blockchain. Thus, BBTrust can be deployed on Ethereum
 without any modifications. It works perfectly with geth (https://github.com/ethereum/go-ethereum);
