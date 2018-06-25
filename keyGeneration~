@@ -1,5 +1,0 @@
-openssl ecparam -genkey -name secp256k1 -out data.pem                 // private key
-
-openssl ec -in ecprivkey.pem -pubout -out ecpubkey.pem                // public key
-
-openssl ec -in ecprivkey.pem -pubout -outform DER -out ecpubkey.der   // DER form
